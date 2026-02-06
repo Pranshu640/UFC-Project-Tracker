@@ -26,6 +26,7 @@ export default defineSchema({
     githubUsername: v.string(),
     githubRepoLink: v.string(),
     deployedLink: v.optional(v.string()),
+    linkedinPost: v.optional(v.string()), // Optional LinkedIn post URL
     previewImageId: v.optional(v.id("_storage")), // Convex file storage
     techStack: v.optional(v.array(v.string())),
     status: v.union(

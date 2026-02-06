@@ -98,10 +98,6 @@ export default function ProjectDetailPage() {
                     <span className="info-value">{project.submitterName}</span>
                 </div>
                 <div className="info-item">
-                    <span className="info-label">Contact</span>
-                    <span className="info-value">{project.contactNo}</span>
-                </div>
-                <div className="info-item">
                     <span className="info-label">GitHub Username</span>
                     <div className="info-value">
                         <a
@@ -135,6 +131,20 @@ export default function ProjectDetailPage() {
                                 rel="noopener noreferrer"
                             >
                                 Visit Site
+                            </a>
+                        </div>
+                    </div>
+                )}
+                {project.linkedinPost && (
+                    <div className="info-item">
+                        <span className="info-label">LinkedIn Post</span>
+                        <div className="info-value">
+                            <a
+                                href={project.linkedinPost}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View Post
                             </a>
                         </div>
                     </div>

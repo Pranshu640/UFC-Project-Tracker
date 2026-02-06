@@ -55,6 +55,7 @@ export default function SubmitPage() {
         githubUsername: "",
         githubRepoLink: "",
         deployedLink: "",
+        linkedinPost: "",
         techStack: [] as string[],
     });
 
@@ -148,6 +149,7 @@ export default function SubmitPage() {
                 githubUsername: formData.githubUsername.trim(),
                 githubRepoLink: formData.githubRepoLink.trim(),
                 deployedLink: formData.deployedLink.trim() || undefined,
+                linkedinPost: formData.linkedinPost.trim() || undefined,
                 previewImageId,
                 techStack: formData.techStack,
             });
@@ -375,16 +377,30 @@ export default function SubmitPage() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">Deployed URL</label>
-                        <input
-                            type="url"
-                            name="deployedLink"
-                            value={formData.deployedLink}
-                            onChange={handleChange}
-                            className="form-input"
-                            placeholder="https://your-app.vercel.app (optional)"
-                        />
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label className="form-label">Deployed URL</label>
+                            <input
+                                type="url"
+                                name="deployedLink"
+                                value={formData.deployedLink}
+                                onChange={handleChange}
+                                className="form-input"
+                                placeholder="https://your-app.vercel.app"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">LinkedIn Post</label>
+                            <input
+                                type="url"
+                                name="linkedinPost"
+                                value={formData.linkedinPost}
+                                onChange={handleChange}
+                                className="form-input"
+                                placeholder="https://linkedin.com/posts/..."
+                            />
+                        </div>
                     </div>
 
                     {/* Tech Stack Selector */}
