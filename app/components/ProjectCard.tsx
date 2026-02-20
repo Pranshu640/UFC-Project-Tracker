@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import StatusBadge from "./StatusBadge";
-import StarRating from "./StarRating";
 import { Id } from "../../convex/_generated/dataModel";
 
 type ProjectStatus =
@@ -33,8 +32,6 @@ interface ProjectCardProps {
         previewImageId?: Id<"_storage">;
         status: ProjectStatus;
         tier?: 1 | 2 | 3;
-        averageRating: number;
-        ratingCount: number;
         techStack?: string[];
     };
 }
@@ -129,14 +126,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
                         @{project.githubUsername}
                     </a>
                 </div>
-
-                <StarRating
-                    rating={project.averageRating}
-                    readonly
-                    size="sm"
-                    showCount
-                    count={project.ratingCount}
-                />
             </div>
 
             <div className="card-actions">

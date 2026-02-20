@@ -10,7 +10,6 @@
 
 import type * as projectAuth from "../projectAuth.js";
 import type * as projects from "../projects.js";
-import type * as ratings from "../ratings.js";
 import type * as reviews from "../reviews.js";
 import type * as storage from "../storage.js";
 import type * as users from "../users.js";
@@ -24,7 +23,6 @@ import type {
 declare const fullApi: ApiFromModules<{
   projectAuth: typeof projectAuth;
   projects: typeof projects;
-  ratings: typeof ratings;
   reviews: typeof reviews;
   storage: typeof storage;
   users: typeof users;

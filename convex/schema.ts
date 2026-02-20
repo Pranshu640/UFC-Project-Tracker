@@ -52,14 +52,10 @@ export default defineSchema({
       v.literal("deployed-bad")
     ),
     tier: v.optional(v.union(v.literal(1), v.literal(2), v.literal(3))), // Tier 1 = best, Tier 3 = worst
-    averageRating: v.number(),
-    ratingCount: v.number(),
-    totalRatingScore: v.number(),
     createdAt: v.number(),
   })
     .index("by_status", ["status"])
     .index("by_domain", ["domain"])
-    .index("by_rating", ["averageRating"])
     .index("by_github", ["githubUsername"])
     .index("by_tier", ["tier"]),
 
@@ -72,14 +68,4 @@ export default defineSchema({
     statusUpdate: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_project", ["projectId"]),
-
-  // Ratings by members
-  ratings: defineTable({
-    projectId: v.id("projects"),
-    raterGithub: v.string(), // Using GitHub username to identify raters
-    score: v.number(), // 1-5 stars
-    createdAt: v.number(),
-  })
-    .index("by_project", ["projectId"])
-    .index("by_rater_project", ["raterGithub", "projectId"]),
 });

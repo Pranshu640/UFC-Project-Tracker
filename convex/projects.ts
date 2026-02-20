@@ -78,9 +78,6 @@ export const createProject = mutation({
             techStack: args.techStack,
             status: "pending",
             tier: undefined,
-            averageRating: 0,
-            ratingCount: 0,
-            totalRatingScore: 0,
             createdAt: Date.now(),
         });
         return projectId;
@@ -146,26 +143,6 @@ export const getProject = query({
     args: { id: v.id("projects") },
     handler: async (ctx, args) => {
         return await ctx.db.get(args.id);
-    },
-});
-
-// Get top rated projects
-export const getTopProjects = query({
-    args: { limit: v.optional(v.number()) },
-    handler: async (ctx, args) => {
-        const limit = args.limit || 5;
-        const projects = await ctx.db.query("projects").order("desc").collect();
-
-        // Sort by average rating, then by rating count
-        return projects
-            .filter((p) => p.ratingCount > 0)
-            .sort((a, b) => {
-                if (b.averageRating !== a.averageRating) {
-                    return b.averageRating - a.averageRating;
-                }
-                return b.ratingCount - a.ratingCount;
-            })
-            .slice(0, limit);
     },
 });
 

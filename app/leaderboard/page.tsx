@@ -6,7 +6,6 @@ import { api } from "../../convex/_generated/api";
 
 export default function LeaderboardPage() {
     const leaderboard = useQuery(api.users.getMemberLeaderboard, { limit: 15 });
-    const topProjects = useQuery(api.projects.getTopProjects, { limit: 5 });
 
     return (
         <div className="page-container">
@@ -15,7 +14,7 @@ export default function LeaderboardPage() {
                 <p className="page-description">Member rankings and top projects</p>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-8)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--space-8)" }}>
                 {/* Members Leaderboard */}
                 <div>
                     <h2 className="section-title" style={{ marginBottom: "var(--space-5)" }}>
@@ -75,87 +74,6 @@ export default function LeaderboardPage() {
                             </table>
                         )}
                     </div>
-                </div>
-
-                {/* Top Projects */}
-                <div>
-                    <h2 className="section-title" style={{ marginBottom: "var(--space-5)" }}>
-                        Top Rated
-                    </h2>
-                    {topProjects === undefined ? (
-                        <div className="loading-center">
-                            <div className="spinner"></div>
-                        </div>
-                    ) : topProjects.length === 0 ? (
-                        <div className="empty-state" style={{
-                            padding: "var(--space-8)",
-                            background: "var(--bg-secondary)",
-                            borderRadius: "var(--radius-lg)",
-                            border: "1px solid var(--border-subtle)"
-                        }}>
-                            <p className="empty-state-description">No rated projects</p>
-                            <Link href="/projects" className="btn btn-primary btn-sm">
-                                Browse Projects
-                            </Link>
-                        </div>
-                    ) : (
-                        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-                            {topProjects.map((project, index) => (
-                                <div
-                                    key={project._id}
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "var(--space-4)",
-                                        padding: "var(--space-4)",
-                                        background: "var(--bg-secondary)",
-                                        border: "1px solid var(--border-subtle)",
-                                        borderRadius: "var(--radius-md)",
-                                    }}
-                                >
-                                    <span style={{
-                                        fontFamily: "var(--font-mono)",
-                                        fontSize: 14,
-                                        fontWeight: 700,
-                                        color: index < 3 ? "var(--star-filled)" : "var(--text-dim)",
-                                        minWidth: 24,
-                                    }}>
-                                        {index + 1}
-                                    </span>
-                                    <div style={{ flex: 1, minWidth: 0 }}>
-                                        <Link
-                                            href={`/projects/${project._id}`}
-                                            style={{
-                                                fontWeight: 600,
-                                                fontSize: 14,
-                                                color: "var(--text-primary)",
-                                                display: "block",
-                                                whiteSpace: "nowrap",
-                                                overflow: "hidden",
-                                                textOverflow: "ellipsis"
-                                            }}
-                                        >
-                                            {project.title}
-                                        </Link>
-                                        <span style={{
-                                            fontSize: 12,
-                                            color: "var(--text-muted)",
-                                        }}>
-                                            @{project.githubUsername}
-                                        </span>
-                                    </div>
-                                    <div style={{
-                                        fontFamily: "var(--font-mono)",
-                                        fontSize: 14,
-                                        fontWeight: 600,
-                                        color: "var(--star-filled)"
-                                    }}>
-                                        {project.averageRating.toFixed(1)}★
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

@@ -6,48 +6,20 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import StatusBadge from "../../components/StatusBadge";
-import StarRating from "../../components/StarRating";
 import ReviewCard from "../../components/ReviewCard";
 
 export default function ProjectDetailPage() {
     const params = useParams();
     const projectId = params.id as Id<"projects">;
 
-    const [githubUsername, setGithubUsername] = useState("");
-    const [isRating, setIsRating] = useState(false);
-
     const project = useQuery(api.projects.getProject, { id: projectId });
     const reviews = useQuery(api.reviews.getProjectReviews, { projectId });
-    const userRating = useQuery(
-        api.ratings.getUserRating,
-        githubUsername ? { projectId, raterGithub: githubUsername } : "skip"
-    );
 
     // Fetch the preview image URL
     const imageUrl = useQuery(
         api.storage.getImageUrl,
         project?.previewImageId ? { storageId: project.previewImageId } : "skip"
     );
-
-    const rateProject = useMutation(api.ratings.rateProject);
-
-    const handleRate = async (score: number) => {
-        if (!githubUsername.trim()) {
-            alert("Please enter your GitHub username to rate");
-            return;
-        }
-
-        try {
-            await rateProject({
-                projectId,
-                raterGithub: githubUsername.trim(),
-                score,
-            });
-        } catch (error) {
-            console.error("Error rating project:", error);
-            alert("Failed to rate project. Please try again.");
-        }
-    };
 
     if (project === undefined) {
         return (
@@ -164,51 +136,6 @@ export default function ProjectDetailPage() {
                             day: "numeric",
                         })}
                     </span>
-                </div>
-            </div>
-
-            {/* Rating Section */}
-            <div className="project-section">
-                <h2 className="project-section-title">
-                    Rate Project
-                </h2>
-                <div className="rating-section">
-                    <div style={{ flex: 1 }}>
-                        <div style={{ marginBottom: "8px" }}>
-                            <StarRating
-                                rating={project.averageRating}
-                                readonly
-                                size="lg"
-                            />
-                        </div>
-                        <div className="rating-info">
-                            <span className="rating-value">{project.averageRating.toFixed(1)}</span>
-                            <span className="rating-count">({project.ratingCount} reviews)</span>
-                        </div>
-                    </div>
-
-                    <div className="github-input-group">
-                        <input
-                            type="text"
-                            placeholder="Enter GitHub ID to rate..."
-                            value={githubUsername}
-                            onChange={(e) => {
-                                setGithubUsername(e.target.value);
-                                setIsRating(true);
-                            }}
-                            className="form-input"
-                        />
-                    </div>
-                    {isRating && githubUsername && (
-                        <div>
-                            <p className="rating-prompt">Your rating:</p>
-                            <StarRating
-                                rating={userRating || 0}
-                                onRate={handleRate}
-                                size="lg"
-                            />
-                        </div>
-                    )}
                 </div>
             </div>
 

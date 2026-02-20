@@ -191,7 +191,6 @@ export default function MentorDashboardPage() {
                                     <th>Submitter</th>
                                     <th>Domain</th>
                                     <th>Status Detail</th>
-                                    <th>Rating</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -275,15 +274,6 @@ export default function MentorDashboardPage() {
                                                         <option value="deployed-bad">Deployed — Bad</option>
                                                     </optgroup>
                                                 </select>
-                                            </td>
-                                            <td>
-                                                {project.averageRating > 0 ? (
-                                                    <span style={{ color: "var(--status-pending)" }}>
-                                                        {project.averageRating.toFixed(1)} ★
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-muted">—</span>
-                                                )}
                                             </td>
                                             <td>
                                                 <button
