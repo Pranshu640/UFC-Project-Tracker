@@ -86,6 +86,12 @@ export default function ProjectDetailPage() {
                 <div className="project-detail-meta">
                     <span className="domain-tag">{project.domain}</span>
                     <StatusBadge status={project.status} />
+                    {project.tier && (
+                        <span className={`tier-badge tier-${project.tier}`} style={{ fontSize: 12, padding: '4px 12px' }}>
+                            <span>{project.tier === 1 ? '🏆' : project.tier === 2 ? '⚡' : '📌'}</span>
+                            <span>Tier {project.tier}</span>
+                        </span>
+                    )}
                 </div>
                 <h1 className="project-detail-title">{project.title}</h1>
                 <p className="project-detail-description">{project.description}</p>

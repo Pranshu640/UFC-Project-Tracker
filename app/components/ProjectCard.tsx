@@ -7,6 +7,20 @@ import StatusBadge from "./StatusBadge";
 import StarRating from "./StarRating";
 import { Id } from "../../convex/_generated/dataModel";
 
+type ProjectStatus =
+    | "pending"
+    | "incomplete"
+    | "complete"
+    | "completed-good"
+    | "completed-decent"
+    | "completed-great"
+    | "completed-bad"
+    | "deployed"
+    | "deployed-good"
+    | "deployed-decent"
+    | "deployed-great"
+    | "deployed-bad";
+
 interface ProjectCardProps {
     project: {
         _id: Id<"projects">;
@@ -17,12 +31,19 @@ interface ProjectCardProps {
         githubRepoLink: string;
         deployedLink?: string;
         previewImageId?: Id<"_storage">;
-        status: "pending" | "incomplete" | "complete" | "deployed";
+        status: ProjectStatus;
+        tier?: 1 | 2 | 3;
         averageRating: number;
         ratingCount: number;
         techStack?: string[];
     };
 }
+
+const tierConfig = {
+    1: { label: "Tier 1", emoji: "🏆", className: "tier-1" },
+    2: { label: "Tier 2", emoji: "⚡", className: "tier-2" },
+    3: { label: "Tier 3", emoji: "📌", className: "tier-3" },
+};
 
 export default function ProjectCard({ project }: ProjectCardProps) {
     const imageUrl = useQuery(
@@ -30,8 +51,18 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         project.previewImageId ? { storageId: project.previewImageId } : "skip"
     );
 
+    const tier = project.tier ? tierConfig[project.tier] : null;
+
     return (
-        <div className="project-card">
+        <div className={`project-card ${tier ? tier.className : ""}`}>
+            {/* Tier Badge */}
+            {tier && (
+                <div className={`tier-badge ${tier.className}`}>
+                    <span>{tier.emoji}</span>
+                    <span>{tier.label}</span>
+                </div>
+            )}
+
             {/* Preview Image */}
             <div className="card-image-container">
                 {imageUrl ? (

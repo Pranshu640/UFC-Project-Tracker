@@ -33,8 +33,17 @@ export default defineSchema({
       v.literal("pending"),
       v.literal("incomplete"),
       v.literal("complete"),
-      v.literal("deployed")
+      v.literal("completed-good"),
+      v.literal("completed-decent"),
+      v.literal("completed-great"),
+      v.literal("completed-bad"),
+      v.literal("deployed"),
+      v.literal("deployed-good"),
+      v.literal("deployed-decent"),
+      v.literal("deployed-great"),
+      v.literal("deployed-bad")
     ),
+    tier: v.optional(v.union(v.literal(1), v.literal(2), v.literal(3))), // Tier 1 = best, Tier 3 = worst
     averageRating: v.number(),
     ratingCount: v.number(),
     totalRatingScore: v.number(),
@@ -43,7 +52,8 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_domain", ["domain"])
     .index("by_rating", ["averageRating"])
-    .index("by_github", ["githubUsername"]),
+    .index("by_github", ["githubUsername"])
+    .index("by_tier", ["tier"]),
 
   // Reviews by mentors
   reviews: defineTable({

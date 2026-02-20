@@ -890,6 +890,139 @@ a {
   background: var(--status-deployed);
 }
 
+/* --- Completed Sub-Statuses --- */
+.status-completed-great {
+  color: #00E676;
+  background: rgba(0, 230, 118, 0.08);
+  border-color: rgba(0, 230, 118, 0.25);
+}
+.status-completed-great .status-dot { background: #00E676; }
+
+.status-completed-good {
+  color: #CCFF00;
+  background: rgba(204, 255, 0, 0.06);
+  border-color: rgba(204, 255, 0, 0.2);
+}
+.status-completed-good .status-dot { background: #CCFF00; }
+
+.status-completed-decent {
+  color: #FFB800;
+  background: rgba(255, 184, 0, 0.06);
+  border-color: rgba(255, 184, 0, 0.2);
+}
+.status-completed-decent .status-dot { background: #FFB800; }
+
+.status-completed-bad {
+  color: #FF4444;
+  background: rgba(255, 68, 68, 0.08);
+  border-color: rgba(255, 68, 68, 0.25);
+}
+.status-completed-bad .status-dot { background: #FF4444; }
+
+/* --- Deployed Sub-Statuses --- */
+.status-deployed-great {
+  color: #00E676;
+  background: rgba(0, 230, 118, 0.08);
+  border-color: rgba(0, 230, 118, 0.25);
+}
+.status-deployed-great .status-dot { background: #00E676; }
+
+.status-deployed-good {
+  color: #CCFF00;
+  background: rgba(204, 255, 0, 0.06);
+  border-color: rgba(204, 255, 0, 0.2);
+}
+.status-deployed-good .status-dot { background: #CCFF00; }
+
+.status-deployed-decent {
+  color: #FFB800;
+  background: rgba(255, 184, 0, 0.06);
+  border-color: rgba(255, 184, 0, 0.2);
+}
+.status-deployed-decent .status-dot { background: #FFB800; }
+
+.status-deployed-bad {
+  color: #FF4444;
+  background: rgba(255, 68, 68, 0.08);
+  border-color: rgba(255, 68, 68, 0.25);
+}
+.status-deployed-bad .status-dot { background: #FF4444; }
+
+/* ============================================
+   TIER SYSTEM
+   ============================================ */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+  position: relative;
+  z-index: 5;
+}
+
+/* Tier 1 — Gold / Elite */
+.tier-badge.tier-1 {
+  color: #FFD700;
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.3);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+}
+
+/* Tier 2 — Silver / Solid */
+.tier-badge.tier-2 {
+  color: #C0C0C0;
+  background: rgba(192, 192, 192, 0.08);
+  border-color: rgba(192, 192, 192, 0.25);
+}
+
+/* Tier 3 — Bronze / Needs Work */
+.tier-badge.tier-3 {
+  color: #CD7F32;
+  background: rgba(205, 127, 50, 0.08);
+  border-color: rgba(205, 127, 50, 0.25);
+}
+
+/* Tier Card Highlights — left border glow */
+.project-card.tier-1 {
+  border-color: rgba(255, 215, 0, 0.3);
+  box-shadow: inset 3px 0 0 #FFD700, 0 0 20px rgba(255, 215, 0, 0.08);
+}
+.project-card.tier-1:hover {
+  box-shadow: inset 3px 0 0 #FFD700, 0 20px 40px rgba(255, 215, 0, 0.12);
+}
+
+.project-card.tier-2 {
+  border-color: rgba(192, 192, 192, 0.25);
+  box-shadow: inset 3px 0 0 #C0C0C0;
+}
+.project-card.tier-2:hover {
+  box-shadow: inset 3px 0 0 #C0C0C0, 0 20px 40px rgba(192, 192, 192, 0.08);
+}
+
+.project-card.tier-3 {
+  border-color: rgba(205, 127, 50, 0.25);
+  box-shadow: inset 3px 0 0 #CD7F32;
+}
+.project-card.tier-3:hover {
+  box-shadow: inset 3px 0 0 #CD7F32, 0 20px 40px rgba(205, 127, 50, 0.08);
+}
+
+/* Floating tier badge on card */
+.project-card .tier-badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+}
+
 /* ============================================
    SECTIONS
    ============================================ */

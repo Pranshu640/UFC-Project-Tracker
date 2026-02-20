@@ -8,6 +8,26 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { useMentor } from "../../lib/auth";
 
+type ProjectStatus =
+    | "pending"
+    | "incomplete"
+    | "complete"
+    | "completed-good"
+    | "completed-decent"
+    | "completed-great"
+    | "completed-bad"
+    | "deployed"
+    | "deployed-good"
+    | "deployed-decent"
+    | "deployed-great"
+    | "deployed-bad";
+
+const tierConfig: Record<number, { label: string; emoji: string; color: string }> = {
+    1: { label: "Tier 1", emoji: "🏆", color: "#FFD700" },
+    2: { label: "Tier 2", emoji: "⚡", color: "#C0C0C0" },
+    3: { label: "Tier 3", emoji: "📌", color: "#CD7F32" },
+};
+
 export default function MentorDashboardPage() {
     const router = useRouter();
     const { mentor, isLoading: authLoading } = useMentor();
@@ -16,6 +36,7 @@ export default function MentorDashboardPage() {
     const projects = useQuery(api.projects.getProjects, {});
 
     const updateStatus = useMutation(api.projects.updateProjectStatus);
+    const updateTier = useMutation(api.projects.updateProjectTier);
     const addReview = useMutation(api.reviews.addReview);
 
     const [reviewProjectId, setReviewProjectId] = useState<Id<"projects"> | null>(null);
@@ -47,11 +68,24 @@ export default function MentorDashboardPage() {
         try {
             await updateStatus({
                 projectId,
-                status: newStatus as "pending" | "incomplete" | "complete" | "deployed",
+                status: newStatus as ProjectStatus,
             });
         } catch (error) {
             console.error("Error updating status:", error);
             alert("Failed to update status");
+        }
+    };
+
+    const handleTierChange = async (projectId: Id<"projects">, newTier: string) => {
+        if (!newTier) return;
+        try {
+            await updateTier({
+                projectId,
+                tier: parseInt(newTier) as 1 | 2 | 3,
+            });
+        } catch (error) {
+            console.error("Error updating tier:", error);
+            alert("Failed to update tier");
         }
     };
 
@@ -67,7 +101,7 @@ export default function MentorDashboardPage() {
                 mentorName: mentor.name,
                 content: reviewContent.trim(),
                 statusUpdate: reviewStatus
-                    ? (reviewStatus as "pending" | "incomplete" | "complete" | "deployed")
+                    ? (reviewStatus as ProjectStatus)
                     : undefined,
             });
 
@@ -92,7 +126,7 @@ export default function MentorDashboardPage() {
             </div>
 
             {/* Stats */}
-            <div className="dashboard-grid">
+            <div className="dashboard-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
                 <div className="dashboard-stat">
                     <div className="dashboard-stat-label">Total Projects</div>
                     <div className="dashboard-stat-value">{stats?.totalProjects ?? "—"}</div>
@@ -115,6 +149,24 @@ export default function MentorDashboardPage() {
                         {stats?.deployedProjects ?? "—"}
                     </div>
                 </div>
+                <div className="dashboard-stat" style={{ borderColor: "#FFD700" }}>
+                    <div className="dashboard-stat-label">🏆 Tier 1</div>
+                    <div className="dashboard-stat-value" style={{ color: "#FFD700" }}>
+                        {stats?.tier1Projects ?? "—"}
+                    </div>
+                </div>
+                <div className="dashboard-stat" style={{ borderColor: "#C0C0C0" }}>
+                    <div className="dashboard-stat-label">⚡ Tier 2</div>
+                    <div className="dashboard-stat-value" style={{ color: "#C0C0C0" }}>
+                        {stats?.tier2Projects ?? "—"}
+                    </div>
+                </div>
+                <div className="dashboard-stat" style={{ borderColor: "#CD7F32" }}>
+                    <div className="dashboard-stat-label">📌 Tier 3</div>
+                    <div className="dashboard-stat-value" style={{ color: "#CD7F32" }}>
+                        {stats?.tier3Projects ?? "—"}
+                    </div>
+                </div>
             </div>
 
             {/* Projects Table */}
@@ -134,6 +186,7 @@ export default function MentorDashboardPage() {
                         <table className="projects-table">
                             <thead>
                                 <tr>
+                                    <th>Tier</th>
                                     <th>Project</th>
                                     <th>Submitter</th>
                                     <th>Domain</th>
@@ -143,55 +196,106 @@ export default function MentorDashboardPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {projects.map((project) => (
-                                    <tr key={project._id}>
-                                        <td>
-                                            <Link
-                                                href={`/projects/${project._id}`}
-                                                style={{ fontWeight: 600, color: "var(--text-white)" }}
-                                            >
-                                                {project.title}
-                                            </Link>
-                                            <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 2 }}>
-                                                @{project.githubUsername}
-                                            </div>
-                                        </td>
-                                        <td>{project.submitterName}</td>
-                                        <td>
-                                            <span className="domain-tag">{project.domain}</span>
-                                        </td>
-                                        <td>
-                                            <select
-                                                value={project.status}
-                                                onChange={(e) => handleStatusChange(project._id, e.target.value)}
-                                                className="form-select"
-                                                style={{ padding: "6px 12px", fontSize: 13, width: "auto" }}
-                                            >
-                                                <option value="pending">Pending</option>
-                                                <option value="incomplete">Incomplete</option>
-                                                <option value="complete">Complete</option>
-                                                <option value="deployed">Deployed</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            {project.averageRating > 0 ? (
-                                                <span style={{ color: "var(--status-pending)" }}>
-                                                    {project.averageRating.toFixed(1)} ★
-                                                </span>
-                                            ) : (
-                                                <span className="text-muted">—</span>
-                                            )}
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="btn btn-sm btn-secondary"
-                                                onClick={() => setReviewProjectId(project._id)}
-                                            >
-                                                Review
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {projects.map((project) => {
+                                    const tier = project.tier ? tierConfig[project.tier] : null;
+                                    const rowBg = project.tier === 1
+                                        ? "rgba(255, 215, 0, 0.04)"
+                                        : project.tier === 2
+                                            ? "rgba(192, 192, 192, 0.04)"
+                                            : project.tier === 3
+                                                ? "rgba(205, 127, 50, 0.04)"
+                                                : "transparent";
+                                    const rowBorder = project.tier === 1
+                                        ? "2px solid rgba(255, 215, 0, 0.3)"
+                                        : project.tier === 2
+                                            ? "2px solid rgba(192, 192, 192, 0.2)"
+                                            : project.tier === 3
+                                                ? "2px solid rgba(205, 127, 50, 0.2)"
+                                                : "none";
+
+                                    return (
+                                        <tr key={project._id} style={{ background: rowBg, borderLeft: rowBorder }}>
+                                            <td>
+                                                <select
+                                                    value={project.tier?.toString() || ""}
+                                                    onChange={(e) => handleTierChange(project._id, e.target.value)}
+                                                    className="form-select"
+                                                    style={{
+                                                        padding: "6px 10px",
+                                                        fontSize: 13,
+                                                        width: "auto",
+                                                        minWidth: "90px",
+                                                        color: tier?.color || "var(--text-secondary)",
+                                                    }}
+                                                >
+                                                    <option value="">No Tier</option>
+                                                    <option value="1">🏆 Tier 1</option>
+                                                    <option value="2">⚡ Tier 2</option>
+                                                    <option value="3">📌 Tier 3</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <Link
+                                                    href={`/projects/${project._id}`}
+                                                    style={{ fontWeight: 600, color: "var(--text-white)" }}
+                                                >
+                                                    {project.title}
+                                                </Link>
+                                                <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 2 }}>
+                                                    @{project.githubUsername}
+                                                </div>
+                                            </td>
+                                            <td>{project.submitterName}</td>
+                                            <td>
+                                                <span className="domain-tag">{project.domain}</span>
+                                            </td>
+                                            <td>
+                                                <select
+                                                    value={project.status}
+                                                    onChange={(e) => handleStatusChange(project._id, e.target.value)}
+                                                    className="form-select"
+                                                    style={{ padding: "6px 12px", fontSize: 13, width: "auto" }}
+                                                >
+                                                    <optgroup label="Basic">
+                                                        <option value="pending">Pending</option>
+                                                        <option value="incomplete">Incomplete</option>
+                                                    </optgroup>
+                                                    <optgroup label="Completed">
+                                                        <option value="complete">Complete</option>
+                                                        <option value="completed-great">Completed — Great</option>
+                                                        <option value="completed-good">Completed — Good</option>
+                                                        <option value="completed-decent">Completed — Decent</option>
+                                                        <option value="completed-bad">Completed — Bad</option>
+                                                    </optgroup>
+                                                    <optgroup label="Deployed">
+                                                        <option value="deployed">Deployed</option>
+                                                        <option value="deployed-great">Deployed — Great</option>
+                                                        <option value="deployed-good">Deployed — Good</option>
+                                                        <option value="deployed-decent">Deployed — Decent</option>
+                                                        <option value="deployed-bad">Deployed — Bad</option>
+                                                    </optgroup>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                {project.averageRating > 0 ? (
+                                                    <span style={{ color: "var(--status-pending)" }}>
+                                                        {project.averageRating.toFixed(1)} ★
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-muted">—</span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-sm btn-secondary"
+                                                    onClick={() => setReviewProjectId(project._id)}
+                                                >
+                                                    Review
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -223,10 +327,24 @@ export default function MentorDashboardPage() {
                                     className="form-select"
                                 >
                                     <option value="">No status change</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="incomplete">Incomplete</option>
-                                    <option value="complete">Complete</option>
-                                    <option value="deployed">Deployed</option>
+                                    <optgroup label="Basic">
+                                        <option value="pending">Pending</option>
+                                        <option value="incomplete">Incomplete</option>
+                                    </optgroup>
+                                    <optgroup label="Completed">
+                                        <option value="complete">Complete</option>
+                                        <option value="completed-great">Completed — Great</option>
+                                        <option value="completed-good">Completed — Good</option>
+                                        <option value="completed-decent">Completed — Decent</option>
+                                        <option value="completed-bad">Completed — Bad</option>
+                                    </optgroup>
+                                    <optgroup label="Deployed">
+                                        <option value="deployed">Deployed</option>
+                                        <option value="deployed-great">Deployed — Great</option>
+                                        <option value="deployed-good">Deployed — Good</option>
+                                        <option value="deployed-decent">Deployed — Decent</option>
+                                        <option value="deployed-bad">Deployed — Bad</option>
+                                    </optgroup>
                                 </select>
                             </div>
                             <div className="modal-actions">

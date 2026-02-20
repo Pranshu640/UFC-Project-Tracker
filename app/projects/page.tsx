@@ -20,7 +20,61 @@ const domains = [
     "Other",
 ];
 
-const statuses = ["all", "pending", "incomplete", "complete", "deployed"];
+const statuses = [
+    "all",
+    "pending",
+    "incomplete",
+    "complete",
+    "completed-great",
+    "completed-good",
+    "completed-decent",
+    "completed-bad",
+    "deployed",
+    "deployed-great",
+    "deployed-good",
+    "deployed-decent",
+    "deployed-bad",
+];
+
+const statusLabels: Record<string, string> = {
+    all: "All Status",
+    pending: "Pending",
+    incomplete: "Incomplete",
+    complete: "Complete",
+    "completed-great": "Completed — Great",
+    "completed-good": "Completed — Good",
+    "completed-decent": "Completed — Decent",
+    "completed-bad": "Completed — Bad",
+    deployed: "Deployed",
+    "deployed-great": "Deployed — Great",
+    "deployed-good": "Deployed — Good",
+    "deployed-decent": "Deployed — Decent",
+    "deployed-bad": "Deployed — Bad",
+};
+
+const tierInfo: Record<number, { label: string; emoji: string; color: string; bg: string; border: string }> = {
+    1: {
+        label: "Tier 1 — Elite",
+        emoji: "🏆",
+        color: "#FFD700",
+        bg: "rgba(255, 215, 0, 0.06)",
+        border: "rgba(255, 215, 0, 0.25)",
+    },
+    2: {
+        label: "Tier 2 — Solid",
+        emoji: "⚡",
+        color: "#C0C0C0",
+        bg: "rgba(192, 192, 192, 0.04)",
+        border: "rgba(192, 192, 192, 0.2)",
+    },
+    3: {
+        label: "Tier 3 — Needs Work",
+        emoji: "📌",
+        color: "#CD7F32",
+        bg: "rgba(205, 127, 50, 0.04)",
+        border: "rgba(205, 127, 50, 0.2)",
+    },
+};
 
 export default function ProjectsPage() {
     const [statusFilter, setStatusFilter] = useState("all");
@@ -34,6 +88,70 @@ export default function ProjectsPage() {
         searchQuery: searchQuery || undefined,
         techStack: techStackFilter,
     });
+
+    // Group projects by tier
+    const tier1 = projects?.filter((p) => p.tier === 1) || [];
+    const tier2 = projects?.filter((p) => p.tier === 2) || [];
+    const tier3 = projects?.filter((p) => p.tier === 3) || [];
+    const untiered = projects?.filter((p) => !p.tier) || [];
+
+    const renderTierSection = (tier: number, tierProjects: typeof tier1) => {
+        if (tierProjects.length === 0) return null;
+        const info = tierInfo[tier];
+
+        return (
+            <div
+                className="tier-section"
+                style={{
+                    marginBottom: "var(--space-10)",
+                    padding: "var(--space-6)",
+                    borderRadius: "var(--radius-lg)",
+                    background: info.bg,
+                    border: `1px solid ${info.border}`,
+                }}
+            >
+                <div
+                    className="tier-section-header"
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "var(--space-3)",
+                        marginBottom: "var(--space-6)",
+                        paddingBottom: "var(--space-4)",
+                        borderBottom: `1px solid ${info.border}`,
+                    }}
+                >
+                    <span style={{ fontSize: 28 }}>{info.emoji}</span>
+                    <div>
+                        <h2
+                            style={{
+                                fontFamily: "var(--font-display)",
+                                fontSize: 24,
+                                fontWeight: 700,
+                                color: info.color,
+                                margin: 0,
+                            }}
+                        >
+                            {info.label}
+                        </h2>
+                        <span
+                            style={{
+                                fontSize: 13,
+                                color: "var(--text-secondary)",
+                            }}
+                        >
+                            {tierProjects.length} project{tierProjects.length !== 1 ? "s" : ""}
+                        </span>
+                    </div>
+                </div>
+                <div className="projects-grid">
+                    {tierProjects.map((project) => (
+                        <ProjectCard key={project._id} project={project} />
+                    ))}
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="page-container">
@@ -89,9 +207,7 @@ export default function ProjectsPage() {
                     >
                         {statuses.map((status) => (
                             <option key={status} value={status}>
-                                {status === "all"
-                                    ? "All Status"
-                                    : status.charAt(0).toUpperCase() + status.slice(1)}
+                                {statusLabels[status] || status}
                             </option>
                         ))}
                     </select>
@@ -107,7 +223,7 @@ export default function ProjectsPage() {
                 </div>
             </div>
 
-            {/* Grid */}
+            {/* Content */}
             {projects === undefined ? (
                 <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-12)" }}>
                     <div className="spinner" style={{
@@ -125,10 +241,52 @@ export default function ProjectsPage() {
                     <p>Try adjusting your search or filters</p>
                 </div>
             ) : (
-                <div className="projects-grid">
-                    {projects.map((project) => (
-                        <ProjectCard key={project._id} project={project} />
-                    ))}
+                <div>
+                    {/* Tiered Sections */}
+                    {renderTierSection(1, tier1)}
+                    {renderTierSection(2, tier2)}
+                    {renderTierSection(3, tier3)}
+
+                    {/* Untiered */}
+                    {untiered.length > 0 && (
+                        <div style={{ marginBottom: "var(--space-10)" }}>
+                            {(tier1.length > 0 || tier2.length > 0 || tier3.length > 0) && (
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "var(--space-3)",
+                                        marginBottom: "var(--space-6)",
+                                        paddingBottom: "var(--space-4)",
+                                        borderBottom: "1px solid var(--border-dim)",
+                                    }}
+                                >
+                                    <span style={{ fontSize: 28 }}>📋</span>
+                                    <div>
+                                        <h2
+                                            style={{
+                                                fontFamily: "var(--font-display)",
+                                                fontSize: 24,
+                                                fontWeight: 700,
+                                                color: "var(--text-secondary)",
+                                                margin: 0,
+                                            }}
+                                        >
+                                            Untiered
+                                        </h2>
+                                        <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
+                                            {untiered.length} project{untiered.length !== 1 ? "s" : ""} — awaiting tier assignment
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="projects-grid">
+                                {untiered.map((project) => (
+                                    <ProjectCard key={project._id} project={project} />
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

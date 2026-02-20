@@ -1,6 +1,21 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
+const statusValidator = v.union(
+    v.literal("pending"),
+    v.literal("incomplete"),
+    v.literal("complete"),
+    v.literal("completed-good"),
+    v.literal("completed-decent"),
+    v.literal("completed-great"),
+    v.literal("completed-bad"),
+    v.literal("deployed"),
+    v.literal("deployed-good"),
+    v.literal("deployed-decent"),
+    v.literal("deployed-great"),
+    v.literal("deployed-bad")
+);
+
 // Create a new project with validation
 export const createProject = mutation({
     args: {
@@ -62,6 +77,7 @@ export const createProject = mutation({
             previewImageId: args.previewImageId,
             techStack: args.techStack,
             status: "pending",
+            tier: undefined,
             averageRating: 0,
             ratingCount: 0,
             totalRatingScore: 0,
@@ -113,6 +129,14 @@ export const getProjects = query({
             );
         }
 
+        // Sort by tier: Tier 1 first, then Tier 2, then Tier 3, then untiered
+        projects.sort((a, b) => {
+            const tierA = a.tier ?? 99; // Untiered goes last
+            const tierB = b.tier ?? 99;
+            if (tierA !== tierB) return tierA - tierB;
+            return 0; // Keep existing order within same tier
+        });
+
         return projects;
     },
 });
@@ -149,15 +173,22 @@ export const getTopProjects = query({
 export const updateProjectStatus = mutation({
     args: {
         projectId: v.id("projects"),
-        status: v.union(
-            v.literal("pending"),
-            v.literal("incomplete"),
-            v.literal("complete"),
-            v.literal("deployed")
-        ),
+        status: statusValidator,
     },
     handler: async (ctx, args) => {
         await ctx.db.patch(args.projectId, { status: args.status });
+        return { success: true };
+    },
+});
+
+// Update project tier (mentor only)
+export const updateProjectTier = mutation({
+    args: {
+        projectId: v.id("projects"),
+        tier: v.union(v.literal(1), v.literal(2), v.literal(3)),
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.projectId, { tier: args.tier });
         return { success: true };
     },
 });
@@ -172,10 +203,16 @@ export const getStats = query({
         return {
             totalProjects: projects.length,
             completedProjects: projects.filter(
-                (p) => p.status === "complete" || p.status === "deployed"
+                (p) => p.status === "complete" || p.status === "deployed" ||
+                    p.status.startsWith("completed-") || p.status.startsWith("deployed-")
             ).length,
-            deployedProjects: projects.filter((p) => p.status === "deployed").length,
+            deployedProjects: projects.filter(
+                (p) => p.status === "deployed" || p.status.startsWith("deployed-")
+            ).length,
             totalMembers: uniqueMembers.size,
+            tier1Projects: projects.filter((p) => p.tier === 1).length,
+            tier2Projects: projects.filter((p) => p.tier === 2).length,
+            tier3Projects: projects.filter((p) => p.tier === 3).length,
         };
     },
 });
