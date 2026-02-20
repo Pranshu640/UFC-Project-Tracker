@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMentor } from "../lib/auth";
+import { useMentor, useAuthor } from "../lib/auth";
 import { useState } from "react";
 
 export default function Navbar() {
     const pathname = usePathname();
-    const { mentor, logout } = useMentor();
+    const { mentor, logout: mentorLogout } = useMentor();
+    const { author, logout: authorLogout } = useAuthor();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const isActive = (path: string) => pathname === path;
@@ -83,6 +84,13 @@ export default function Navbar() {
                         >
                             Submit
                         </Link>
+                        <Link
+                            href={author ? "/author/dashboard" : "/author/login"}
+                            className={`nav-link ${(isActive("/author/dashboard") || isActive("/author/login")) ? "active" : ""}`}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            Edit Projects
+                        </Link>
                     </div>
 
                     <div className="navbar-auth">
@@ -94,7 +102,7 @@ export default function Navbar() {
                                     </span>
                                     <span className="mentor-name">{mentor.name}</span>
                                 </Link>
-                                <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="logout-btn">
+                                <button onClick={() => { mentorLogout(); setIsMobileMenuOpen(false); }} className="logout-btn">
                                     Logout
                                 </button>
                             </div>

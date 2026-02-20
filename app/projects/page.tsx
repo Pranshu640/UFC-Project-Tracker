@@ -54,25 +54,25 @@ const statusLabels: Record<string, string> = {
 
 const tierInfo: Record<number, { label: string; emoji: string; color: string; bg: string; border: string }> = {
     1: {
-        label: "Tier 1 — Elite",
-        emoji: "🏆",
-        color: "#FFD700",
-        bg: "rgba(255, 215, 0, 0.06)",
-        border: "rgba(255, 215, 0, 0.25)",
+        label: "Featured Projects",
+        emoji: "✦",
+        color: "var(--accent)",
+        bg: "rgba(204, 255, 0, 0.02)",
+        border: "rgba(204, 255, 0, 0.2)",
     },
     2: {
-        label: "Tier 2 — Solid",
-        emoji: "⚡",
-        color: "#C0C0C0",
-        bg: "rgba(192, 192, 192, 0.04)",
-        border: "rgba(192, 192, 192, 0.2)",
+        label: "Highlighted Projects",
+        emoji: "✧",
+        color: "var(--text-white)",
+        bg: "rgba(255, 255, 255, 0.02)",
+        border: "rgba(255, 255, 255, 0.15)",
     },
     3: {
-        label: "Tier 3 — Needs Work",
-        emoji: "📌",
-        color: "#CD7F32",
-        bg: "rgba(205, 127, 50, 0.04)",
-        border: "rgba(205, 127, 50, 0.2)",
+        label: "Showcased Projects",
+        emoji: "✓",
+        color: "var(--text-secondary)",
+        bg: "rgba(255, 255, 255, 0.01)",
+        border: "rgba(255, 255, 255, 0.05)",
     },
 };
 

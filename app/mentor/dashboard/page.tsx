@@ -23,9 +23,9 @@ type ProjectStatus =
     | "deployed-bad";
 
 const tierConfig: Record<number, { label: string; emoji: string; color: string }> = {
-    1: { label: "Tier 1", emoji: "🏆", color: "#FFD700" },
-    2: { label: "Tier 2", emoji: "⚡", color: "#C0C0C0" },
-    3: { label: "Tier 3", emoji: "📌", color: "#CD7F32" },
+    1: { label: "Featured", emoji: "✦", color: "var(--accent)" },
+    2: { label: "Highlighted", emoji: "✧", color: "var(--text-white)" },
+    3: { label: "Showcased", emoji: "✓", color: "var(--text-secondary)" },
 };
 
 export default function MentorDashboardPage() {
@@ -149,21 +149,21 @@ export default function MentorDashboardPage() {
                         {stats?.deployedProjects ?? "—"}
                     </div>
                 </div>
-                <div className="dashboard-stat" style={{ borderColor: "#FFD700" }}>
-                    <div className="dashboard-stat-label">🏆 Tier 1</div>
-                    <div className="dashboard-stat-value" style={{ color: "#FFD700" }}>
+                <div className="dashboard-stat" style={{ borderColor: "var(--border-accent)" }}>
+                    <div className="dashboard-stat-label">✦ Featured</div>
+                    <div className="dashboard-stat-value" style={{ color: "var(--accent)" }}>
                         {stats?.tier1Projects ?? "—"}
                     </div>
                 </div>
-                <div className="dashboard-stat" style={{ borderColor: "#C0C0C0" }}>
-                    <div className="dashboard-stat-label">⚡ Tier 2</div>
-                    <div className="dashboard-stat-value" style={{ color: "#C0C0C0" }}>
+                <div className="dashboard-stat" style={{ borderColor: "var(--border-bright)" }}>
+                    <div className="dashboard-stat-label">✧ Highlighted</div>
+                    <div className="dashboard-stat-value" style={{ color: "var(--text-white)" }}>
                         {stats?.tier2Projects ?? "—"}
                     </div>
                 </div>
-                <div className="dashboard-stat" style={{ borderColor: "#CD7F32" }}>
-                    <div className="dashboard-stat-label">📌 Tier 3</div>
-                    <div className="dashboard-stat-value" style={{ color: "#CD7F32" }}>
+                <div className="dashboard-stat" style={{ borderColor: "var(--border-dim)" }}>
+                    <div className="dashboard-stat-label">✓ Showcased</div>
+                    <div className="dashboard-stat-value" style={{ color: "var(--text-secondary)" }}>
                         {stats?.tier3Projects ?? "—"}
                     </div>
                 </div>
@@ -199,18 +199,18 @@ export default function MentorDashboardPage() {
                                 {projects.map((project) => {
                                     const tier = project.tier ? tierConfig[project.tier] : null;
                                     const rowBg = project.tier === 1
-                                        ? "rgba(255, 215, 0, 0.04)"
+                                        ? "rgba(204, 255, 0, 0.02)"
                                         : project.tier === 2
-                                            ? "rgba(192, 192, 192, 0.04)"
+                                            ? "rgba(255, 255, 255, 0.02)"
                                             : project.tier === 3
-                                                ? "rgba(205, 127, 50, 0.04)"
+                                                ? "rgba(255, 255, 255, 0.01)"
                                                 : "transparent";
                                     const rowBorder = project.tier === 1
-                                        ? "2px solid rgba(255, 215, 0, 0.3)"
+                                        ? "2px solid rgba(204, 255, 0, 0.3)"
                                         : project.tier === 2
-                                            ? "2px solid rgba(192, 192, 192, 0.2)"
+                                            ? "2px solid rgba(255, 255, 255, 0.15)"
                                             : project.tier === 3
-                                                ? "2px solid rgba(205, 127, 50, 0.2)"
+                                                ? "2px solid rgba(255, 255, 255, 0.05)"
                                                 : "none";
 
                                     return (
@@ -229,9 +229,9 @@ export default function MentorDashboardPage() {
                                                     }}
                                                 >
                                                     <option value="">No Tier</option>
-                                                    <option value="1">🏆 Tier 1</option>
-                                                    <option value="2">⚡ Tier 2</option>
-                                                    <option value="3">📌 Tier 3</option>
+                                                    <option value="1">✦ Featured</option>
+                                                    <option value="2">✧ Highlighted</option>
+                                                    <option value="3">✓ Showcased</option>
                                                 </select>
                                             </td>
                                             <td>

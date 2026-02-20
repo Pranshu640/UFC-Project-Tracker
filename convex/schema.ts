@@ -16,6 +16,14 @@ export default defineSchema({
     .index("by_role", ["role"])
     .index("by_github", ["githubUsername"]),
 
+  // Member accounts for project owners
+  memberAccounts: defineTable({
+    githubUsername: v.string(),
+    password: v.string(),
+    name: v.string(),
+    createdAt: v.number(),
+  }).index("by_github", ["githubUsername"]),
+
   // Projects table
   projects: defineTable({
     submitterName: v.string(),

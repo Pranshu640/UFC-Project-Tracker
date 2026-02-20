@@ -40,9 +40,9 @@ interface ProjectCardProps {
 }
 
 const tierConfig = {
-    1: { label: "Tier 1", emoji: "🏆", className: "tier-1" },
-    2: { label: "Tier 2", emoji: "⚡", className: "tier-2" },
-    3: { label: "Tier 3", emoji: "📌", className: "tier-3" },
+    1: { label: "Featured", emoji: "✦", className: "tier-1" },
+    2: { label: "Highlighted", emoji: "✧", className: "tier-2" },
+    3: { label: "Showcased", emoji: "✓", className: "tier-3" },
 };
 
 export default function ProjectCard({ project }: ProjectCardProps) {

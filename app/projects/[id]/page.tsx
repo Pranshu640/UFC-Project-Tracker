@@ -88,8 +88,8 @@ export default function ProjectDetailPage() {
                     <StatusBadge status={project.status} />
                     {project.tier && (
                         <span className={`tier-badge tier-${project.tier}`} style={{ fontSize: 12, padding: '4px 12px' }}>
-                            <span>{project.tier === 1 ? '🏆' : project.tier === 2 ? '⚡' : '📌'}</span>
-                            <span>Tier {project.tier}</span>
+                            <span>{project.tier === 1 ? '✦' : project.tier === 2 ? '✧' : '✓'}</span>
+                            <span>{project.tier === 1 ? 'Featured' : project.tier === 2 ? 'Highlighted' : 'Showcased'}</span>
                         </span>
                     )}
                 </div>
