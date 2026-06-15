@@ -4,6 +4,7 @@ import { ConvexClientProvider } from "./ConvexClientProvider";
 import Navbar from "./components/Navbar";
 import { AuthProvider } from "./lib/auth";
 import { ToastProvider } from "./components/Toast";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "UFC Project Tracker",
@@ -30,6 +31,7 @@ export default function RootLayout({
             </ToastProvider>
           </AuthProvider>
         </ConvexClientProvider>
+        <Analytics />
       </body>
     </html>
   );
